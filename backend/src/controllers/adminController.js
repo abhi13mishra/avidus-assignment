@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Task = require("../models/Task");
+const ActivityLog = require("../models/ActivityLog");
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -98,10 +99,59 @@ const getAllTasks = async (req, res) => {
     }
 };
 
+//delete tasks
+const deleteAnyTask = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found",
+            });
+        }
+
+        await Task.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: "Task deleted successfully by admin",
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+//get acticity logs
+const getActivityLogs = async (req, res) => {
+    try {
+        const logs = await ActivityLog.find()
+            .populate("user", "name email role")
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            count: logs.length,
+            logs,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
 
 module.exports = {
     getAllUsers,
     updateUserStatus,
     deleteUser,
     getAllTasks,
+    deleteAnyTask,
+    getActivityLogs,
 };

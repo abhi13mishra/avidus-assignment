@@ -2,7 +2,8 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-//register
+const logActivity = require("../utils/logActivity");
+
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -44,7 +45,6 @@ const registerUser = async (req, res) => {
     }
 };
 
-//login
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -79,6 +79,11 @@ const loginUser = async (req, res) => {
             {
                 expiresIn: "7d",
             }
+        );
+
+        await logActivity(
+            user._id,
+            "User Logged In"
         );
 
         res.status(200).json({

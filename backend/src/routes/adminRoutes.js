@@ -8,11 +8,13 @@ const {
     updateUserStatus,
     deleteUser,
     getAllTasks,
+    deleteAnyTask,
+    getActivityLogs,
 } = require("../controllers/adminController");
 
 const router = express.Router();
 
-//for get all user
+//get all user
 router.get(
     "/users",
     authMiddleware,
@@ -20,7 +22,7 @@ router.get(
     getAllUsers
 );
 
-//for update user status
+//update user status
 router.patch(
     "/users/:id/status",
     authMiddleware,
@@ -28,7 +30,7 @@ router.patch(
     updateUserStatus
 );
 
-//for delete user
+//delete user
 router.delete(
     "/users/:id",
     authMiddleware,
@@ -36,12 +38,28 @@ router.delete(
     deleteUser
 );
 
-//for view all tasks
+//view all tasks
 router.get(
     "/tasks",
     authMiddleware,
     adminMiddleware,
     getAllTasks
+);
+
+//delete any tasks
+router.delete(
+    "/tasks/:id",
+    authMiddleware,
+    adminMiddleware,
+    deleteAnyTask
+);
+
+//get acticity logs
+router.get(
+    "/logs",
+    authMiddleware,
+    adminMiddleware,
+    getActivityLogs
 );
 
 module.exports = router;

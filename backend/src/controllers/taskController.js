@@ -1,4 +1,5 @@
 const Task = require("../models/Task");
+const logActivity = require("../utils/logActivity");
 
 const createTask = async (req, res) => {
     try {
@@ -9,6 +10,11 @@ const createTask = async (req, res) => {
             description,
             user: req.user.id,
         });
+
+        await logActivity(
+            req.user.id,
+            "Task Created"
+        );
 
         res.status(201).json({
             success: true,
@@ -68,6 +74,11 @@ const updateTask = async (req, res) => {
             { new: true }
         );
 
+        await logActivity(
+            req.user.id,
+            "Task Updated"
+        );
+
         res.status(200).json({
             success: true,
             message: "Task updated successfully",
@@ -102,6 +113,11 @@ const deleteTask = async (req, res) => {
 
         await Task.findByIdAndDelete(req.params.id);
 
+        await logActivity(
+            req.user.id,
+            "Task Deleted"
+        );
+
         res.status(200).json({
             success: true,
             message: "Task deleted successfully",
@@ -114,7 +130,6 @@ const deleteTask = async (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     createTask,
