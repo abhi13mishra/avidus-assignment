@@ -5,7 +5,9 @@ const ActivityLog = require("../models/ActivityLog");
 // get all users
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select("-password");
+        const users = await User.find({
+            role: "user",
+        }).select("-password");
 
         res.status(200).json({
             success: true,

@@ -104,7 +104,10 @@ const deleteTask = async (req, res) => {
             });
         }
 
-        if (task.user.toString() !== req.user.id) {
+        if (
+            task.user.toString() !== req.user.id &&
+            req.user.role !== "admin"
+        ) {
             return res.status(403).json({
                 success: false,
                 message: "Access denied",
