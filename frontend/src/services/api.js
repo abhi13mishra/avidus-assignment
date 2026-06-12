@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/api",
+    baseURL: "https://avidus-assignment-1-fd6m.onrender.com/api"
 });
 
 export default api;
