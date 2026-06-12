@@ -4,6 +4,8 @@ import api from "../services/api";
 import styles from "./Login.module.css";
 
 const Login = () => {
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -22,6 +24,8 @@ const Login = () => {
         e.preventDefault();
 
         try {
+            setLoading(true);
+
             const res = await api.post(
                 "/auth/login",
                 formData
@@ -55,6 +59,8 @@ const Login = () => {
                 error.response?.data?.message ||
                 "Login Failed"
             );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -80,8 +86,8 @@ const Login = () => {
                         onChange={handleChange}
                     />
 
-                    <button type="submit">
-                        Login
+                    <button type="submit" disabled={loading}>
+                        {loading ? <div className={styles.spinner}></div> : "Login"}
                     </button>
                 </form>
 

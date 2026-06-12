@@ -4,6 +4,8 @@ import api from "../services/api";
 import styles from "./Register.module.css";
 
 const Register = () => {
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -23,6 +25,8 @@ const Register = () => {
         e.preventDefault();
 
         try {
+            setLoading(true);
+
             await api.post("/auth/register", formData);
 
             alert("Registration Successful");
@@ -33,6 +37,8 @@ const Register = () => {
                 error.response?.data?.message ||
                 "Something went wrong"
             );
+        } finally {
+            setLoading(false)
         }
     };
 
