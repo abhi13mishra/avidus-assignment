@@ -46,8 +46,6 @@ const Login = () => {
                 res.data.userId
             );
 
-            alert("Login Successful");
-
             if (res.data.role === "admin") {
                 navigate("/admin");
             } else {
@@ -87,7 +85,14 @@ const Login = () => {
                     />
 
                     <button type="submit" disabled={loading}>
-                        {loading ? <div className={styles.spinner}></div> : "Login"}
+                        {loading ? (
+                            <>
+                                <span className={styles.spinner}></span>
+                                <span>Login</span>
+                            </>
+                        ) : (
+                            "Login"
+                        )}
                     </button>
                 </form>
 

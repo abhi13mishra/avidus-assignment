@@ -29,8 +29,6 @@ const Register = () => {
 
             await api.post("/auth/register", formData);
 
-            alert("Registration Successful");
-
             navigate("/login");
         } catch (error) {
             alert(
@@ -72,8 +70,15 @@ const Register = () => {
                         onChange={handleChange}
                     />
 
-                    <button type="submit">
-                        Register
+                    <button type="submit" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <span className={styles.spinner}></span>
+                                <span>Register</span>
+                            </>
+                        ) : (
+                            "Register"
+                        )}
                     </button>
                 </form>
 

@@ -51,6 +51,11 @@ button {
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 button:hover {
