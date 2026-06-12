@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
-import styles from "./Login.module.css";
+import styles from "./Register.module.css";
 
-const Login = () => {
+const Register = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        name: "",
         email: "",
         password: "",
     });
@@ -22,38 +23,15 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const res = await api.post(
-                "/auth/login",
-                formData
-            );
+            await api.post("/auth/register", formData);
 
-            localStorage.setItem(
-                "token",
-                res.data.token
-            );
+            alert("Registration Successful");
 
-            localStorage.setItem(
-                "role",
-                res.data.role
-            );
-
-            localStorage.setItem(
-                "userId",
-                res.data.userId
-            );
-
-            alert("Login Successful");
-
-            if (res.data.role === "admin") {
-                navigate("/admin");
-            } else {
-                navigate("/dashboard");
-            }
-
+            navigate("/login");
         } catch (error) {
             alert(
                 error.response?.data?.message ||
-                "Login Failed"
+                "Something went wrong"
             );
         }
     };
@@ -61,9 +39,17 @@ const Login = () => {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <h1>Welcome Back</h1>
+                <h1>Create Account</h1>
 
                 <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                    />
+
                     <input
                         type="email"
                         name="email"
@@ -81,14 +67,14 @@ const Login = () => {
                     />
 
                     <button type="submit">
-                        Login
+                        Register
                     </button>
                 </form>
 
                 <p>
-                    Don't have an account?
-                    <Link to="/register">
-                        Register
+                    Already have an account?{" "}
+                    <Link to="/login">
+                        Login
                     </Link>
                 </p>
             </div>
@@ -96,4 +82,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;
