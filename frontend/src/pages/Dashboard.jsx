@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import api from "../services/api";
 import styles from "./Dashboard.module.css";
 
@@ -7,6 +9,8 @@ const Dashboard = () => {
     const [description, setDescription] = useState("");
     const [tasks, setTasks] = useState([]);
     const [editId, setEditId] = useState(null);
+
+    const navigate = useNavigate();
 
     const fetchTasks = async () => {
         try {
@@ -126,84 +130,101 @@ const Dashboard = () => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
+
+        navigate("/login");
+    };
+
     useEffect(() => {
         fetchTasks();
     }, []);
 
     return (
-        <div className={styles.container}>
-            <h1>My Tasks</h1>
+        <>
+            <Navbar
+                title="My Tasks"
+                onLogout={handleLogout}
+            />
 
-            <div className={styles.form}>
-                <input
-                    type="text"
-                    placeholder="Task Title"
-                    value={title}
-                    onChange={(e) =>
-                        setTitle(e.target.value)
-                    }
-                />
+            <div>
 
-                <textarea
-                    placeholder="Task Description"
-                    value={description}
-                    onChange={(e) =>
-                        setDescription(e.target.value)
-                    }
-                />
+                <div className={styles.container}>
+                    <h1>My Tasks</h1>
 
-                {editId ? (
-                    <button onClick={updateTask}>
-                        Update Task
-                    </button>
-                ) : (
-                    <button onClick={createTask}>
-                        Create Task
-                    </button>
-                )}
-            </div>
+                    <div className={styles.form}>
+                        <input
+                            type="text"
+                            placeholder="Task Title"
+                            value={title}
+                            onChange={(e) =>
+                                setTitle(e.target.value)
+                            }
+                        />
 
-            <div className={styles.tasks}>
-                {tasks.map((task) => (
-                    <div
-                        key={task._id}
-                        className={styles.card}
-                    >
-                        <h3>{task.title}</h3>
+                        <textarea
+                            placeholder="Task Description"
+                            value={description}
+                            onChange={(e) =>
+                                setDescription(e.target.value)
+                            }
+                        />
 
-                        <p>{task.description}</p>
-
-                        <div className={styles.actions}>
-                            <button
-                                className={styles.editBtn}
-                                onClick={() => editTask(task)}
-                            >
-                                Edit
+                        {editId ? (
+                            <button onClick={updateTask}>
+                                Update Task
                             </button>
-
-                            <button
-                                className={styles.statusBtn}
-                                onClick={() => toggleStatus(task)}
-                            >
-                                {task.status === "completed"
-                                    ? "Pending"
-                                    : "Complete"}
+                        ) : (
+                            <button onClick={createTask}>
+                                Create Task
                             </button>
-
-                            <button
-                                className={styles.deleteBtn}
-                                onClick={() =>
-                                    deleteTask(task._id)
-                                }
-                            >
-                                Delete
-                            </button>
-                        </div>
+                        )}
                     </div>
-                ))}
+
+                    <div className={styles.tasks}>
+                        {tasks.map((task) => (
+                            <div
+                                key={task._id}
+                                className={styles.card}
+                            >
+                                <h3>{task.title}</h3>
+
+                                <p>{task.description}</p>
+
+                                <div className={styles.actions}>
+                                    <button
+                                        className={styles.editBtn}
+                                        onClick={() => editTask(task)}
+                                    >
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        className={styles.statusBtn}
+                                        onClick={() => toggleStatus(task)}
+                                    >
+                                        {task.status === "completed"
+                                            ? "Pending"
+                                            : "Complete"}
+                                    </button>
+
+                                    <button
+                                        className={styles.deleteBtn}
+                                        onClick={() =>
+                                            deleteTask(task._id)
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div >
             </div>
-        </div>
+        </>
     );
 };
-
 export default Dashboard;

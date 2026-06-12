@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+
 import api from "../services/api";
 import styles from "./AdminDashboard.module.css";
 
@@ -6,6 +9,9 @@ const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [logs, setLogs] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     const fetchAdminData = async () => {
         try {
@@ -113,6 +119,14 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
+
+        navigate("/login");
+    };
+
     useEffect(() => {
         fetchAdminData();
     }, []);
@@ -126,125 +140,132 @@ const AdminDashboard = () => {
     ).length;
 
     return (
-        <div className={styles.container}>
-            <h1>Admin Dashboard</h1>
+        <>
+            <Navbar
+                title="Admin Dashboard"
+                onLogout={handleLogout}
+            />
 
-            <div className={styles.stats}>
-                <div className={styles.card}>
-                    <h3>Total Users</h3>
-                    <p>{users.length}</p>
-                </div>
+            <div className={styles.container}>
+                <h1>Admin Dashboard</h1>
 
-                <div className={styles.card}>
-                    <h3>Total Tasks</h3>
-                    <p>{tasks.length}</p>
-                </div>
+                <div className={styles.stats}>
+                    <div className={styles.card}>
+                        <h3>Total Users</h3>
+                        <p>{users.length}</p>
+                    </div>
 
-                <div className={styles.card}>
-                    <h3>Completed Tasks</h3>
-                    <p>{completedTasks}</p>
-                </div>
+                    <div className={styles.card}>
+                        <h3>Total Tasks</h3>
+                        <p>{tasks.length}</p>
+                    </div>
 
-                <div className={styles.card}>
-                    <h3>Pending Tasks</h3>
-                    <p>{pendingTasks}</p>
-                </div>
-            </div>
+                    <div className={styles.card}>
+                        <h3>Completed Tasks</h3>
+                        <p>{completedTasks}</p>
+                    </div>
 
-            <div className={styles.sections}>
-                <div className={styles.sectionCard}>
-                    <h2>User Management</h2>
-
-                    <div className={styles.userList}>
-                        {users.map((user) => (
-                            <div
-                                key={user._id}
-                                className={styles.userCard}
-                            >
-                                <div>
-                                    <h4>{user.name}</h4>
-                                    <p>{user.email}</p>
-                                    <p>{user.status}</p>
-                                </div>
-
-                                <div className={styles.userActions}>
-                                    <button
-                                        onClick={() =>
-                                            updateUserStatus(user)
-                                        }
-                                    >
-                                        {user.status === "active"
-                                            ? "Deactivate"
-                                            : "Activate"}
-                                    </button>
-
-                                    <button
-                                        onClick={() =>
-                                            deleteUser(user._id)
-                                        }
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                    <div className={styles.card}>
+                        <h3>Pending Tasks</h3>
+                        <p>{pendingTasks}</p>
                     </div>
                 </div>
 
-                <div className={styles.sectionCard}>
-                    <h2>Task Monitoring</h2>
+                <div className={styles.sections}>
+                    <div className={styles.sectionCard}>
+                        <h2>User Management</h2>
 
-                    <div className={styles.taskList}>
-                        {tasks.map((task) => (
-                            <div
-                                key={task._id}
-                                className={styles.taskCard}
-                            >
-                                <h4>{task.title}</h4>
-
-                                <p>{task.description}</p>
-
-                                <p className={styles.status}>
-                                    Status: {task.status}
-                                </p>
-
-                                <button
-                                    className={styles.deleteTaskBtn}
-                                    onClick={() => deleteTask(task._id)}
+                        <div className={styles.userList}>
+                            {users.map((user) => (
+                                <div
+                                    key={user._id}
+                                    className={styles.userCard}
                                 >
-                                    Delete Task
-                                </button>
-                            </div>
-                        ))}
+                                    <div>
+                                        <h4>{user.name}</h4>
+                                        <p>{user.email}</p>
+                                        <p>{user.status}</p>
+                                    </div>
+
+                                    <div className={styles.userActions}>
+                                        <button
+                                            onClick={() =>
+                                                updateUserStatus(user)
+                                            }
+                                        >
+                                            {user.status === "active"
+                                                ? "Deactivate"
+                                                : "Activate"}
+                                        </button>
+
+                                        <button
+                                            onClick={() =>
+                                                deleteUser(user._id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                <div className={styles.sectionCard}>
-                    <h2>Activity Logs</h2>
+                    <div className={styles.sectionCard}>
+                        <h2>Task Monitoring</h2>
 
-                    <div className={styles.logsList}>
-                        {logs.map((log) => (
-                            <div
-                                key={log._id}
-                                className={styles.logCard}
-                            >
-                                <h4>{log.action}</h4>
+                        <div className={styles.taskList}>
+                            {tasks.map((task) => (
+                                <div
+                                    key={task._id}
+                                    className={styles.taskCard}
+                                >
+                                    <h4>{task.title}</h4>
 
-                                <p>
-                                    User: {log.user?.name}
-                                </p>
+                                    <p>{task.description}</p>
 
-                                <p>
-                                    {new Date(
-                                        log.createdAt
-                                    ).toLocaleString()}
-                                </p>
-                            </div>
-                        ))}
+                                    <p className={styles.status}>
+                                        Status: {task.status}
+                                    </p>
+
+                                    <button
+                                        className={styles.deleteTaskBtn}
+                                        onClick={() => deleteTask(task._id)}
+                                    >
+                                        Delete Task
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.sectionCard}>
+                        <h2>Activity Logs</h2>
+
+                        <div className={styles.logsList}>
+                            {logs.map((log) => (
+                                <div
+                                    key={log._id}
+                                    className={styles.logCard}
+                                >
+                                    <h4>{log.action}</h4>
+
+                                    <p>
+                                        User: {log.user?.name}
+                                    </p>
+
+                                    <p>
+                                        {new Date(
+                                            log.createdAt
+                                        ).toLocaleString()}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
